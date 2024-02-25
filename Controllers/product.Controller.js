@@ -1,4 +1,4 @@
-const Product = require("../Models/Product.Model");
+const Product = require("../Models/product.Model");
 
 class productController {
     index(req, res) {}
