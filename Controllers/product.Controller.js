@@ -3,7 +3,8 @@ const product = require("../Models/product.Model");
 class productController {
     index(req, res) {}
     get(req, res) {
-        res.send(JSON.stringify({ data: product.find() }));
+        res.send("ok product");
+        console.log(product.find());
     }
 }
 
