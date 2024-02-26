@@ -2,7 +2,7 @@ const Product = require("../Models/product.Model");
 class adminController {
     async addProduct(req, res) {
         try {
-            console.log(req.body);
+            console.log(req);
             const { name, price, description, category } = req.body;
             const newProduct = new Product({
                 name,
