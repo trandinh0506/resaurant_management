@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const adminController = require("../Controllers/admin.Controller");
 
-router.put("/addProduct", adminController.addProduct);
-router.delete("/removeProduct", adminController.removeProduct);
-router.put("/addProduct", adminController.updateProduct);
+router.post("/addProduct", adminController.addProduct);
+router.delete("/removeProduct/:id", adminController.removeProduct);
+router.put("/updateProduct/:id", adminController.updateProduct);
 
 module.exports = router;

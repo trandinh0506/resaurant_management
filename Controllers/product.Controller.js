@@ -1,9 +1,8 @@
-const Product = require("../Models/product.Model");
+const products = require("../products");
 
 class productController {
     async get(req, res) {
-        const result = await Product.find();
-        res.json(result);
+        res.status(200).json(await products.get());
     }
 }
 

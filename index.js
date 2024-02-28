@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 
 require("dotenv").config();
 
@@ -16,10 +17,12 @@ db.once("open", () => console.log("Connected to MongoDB"));
 const authRoutes = require("./Routes/authentication.Route");
 const productRoutes = require("./Routes/product.Route");
 const adminRoutes = require("./Routes/admin.Route");
+const tableRoutes = require("./Routes/table.Route");
 
 app.use("/auth", authRoutes);
 app.use("/product", productRoutes);
 app.use("/admin", adminRoutes);
+app.use("/table", tableRoutes);
 // 404 not found
 app.use((req, res) => {
     res.status(404).json({ message: "Not Found" });
