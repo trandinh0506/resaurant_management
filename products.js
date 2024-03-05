@@ -2,18 +2,28 @@ const Product = require("./Models/product.Model");
 
 function products() {
     const products = [];
-    isEmty = () => {
-        return products.length == 0;
+
+    const isEmty = () => {
+        return products.length === 0;
     };
-    update = async () => {
-        const result = await Product.find({ modify: true });
-        products.length = 0;
-        result.forEach((item) => products.push(item));
+
+    const update = async () => {
+        try {
+            const result = await Product.find({ modify: true });
+            products.length = 0;
+            result.forEach((item) => products.push(item));
+        } catch (error) {
+            console.error("Error updating products:", error);
+        }
     };
-    get = async () => {
-        if (isEmty()) await update();
+
+    const get = async () => {
+        if (isEmty()) {
+            await update();
+        }
         return products;
     };
+
     return {
         isEmty,
         update,
