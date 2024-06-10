@@ -33,12 +33,22 @@ class authentication {
             sub: userId,
             role: isAdmin ? "admin" : "user",
         };
-        console.log("key: ", process.env.SECRET_KEY, "\nid: ", userId);
         const token = jwt.sign(payload, process.env.SECRET_KEY, {
             expiresIn: "3h",
         });
 
         return token;
+    }
+    validate(token, next, reject) {
+        jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+            if (err) {
+                console.error("Token verification failed:", err);
+                reject();
+            } else {
+                console.log("Decoded token:", decoded);
+                next();
+            }
+        });
     }
 }
 

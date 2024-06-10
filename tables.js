@@ -1,18 +1,18 @@
 const Table = require("./Models/table.Model");
 
 function tables() {
-    const tables = [];
+    const tableList = [];
     isEmty = () => {
-        return tables.length == 0;
+        return tableList.length == 0;
     };
     update = async () => {
         const result = await Table.find();
-        tables.length = 0;
-        result.forEach((item) => tables.push(item));
+        tableList.length = 0;
+        result.forEach((item) => tableList.push(item));
     };
     get = async () => {
         if (isEmty()) await update();
-        return tables;
+        return [...tableList];
     };
     return {
         isEmty,

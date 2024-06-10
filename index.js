@@ -18,11 +18,13 @@ const authRoutes = require("./Routes/authentication.Route");
 const productRoutes = require("./Routes/product.Route");
 const adminRoutes = require("./Routes/admin.Route");
 const tableRoutes = require("./Routes/table.Route");
+const userRoutes = require("./Routes/user.Route");
 
 app.use("/auth", authRoutes);
 app.use("/product", productRoutes);
 app.use("/admin", adminRoutes);
 app.use("/table", tableRoutes);
+app.use("/user", userRoutes);
 // 404 not found
 app.use((req, res) => {
     res.status(404).json({ message: "Not Found" });
