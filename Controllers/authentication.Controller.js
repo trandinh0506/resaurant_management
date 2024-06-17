@@ -8,8 +8,25 @@ class authenticationController {
                 username,
                 password
             );
+            const token = result.message;
+            const userAgent = req.headers["user-agent"] || "";
+            const isWebClient =
+                userAgent.includes("Mozilla") ||
+                userAgent.includes("Chrome") ||
+                userAgent.includes("Safari");
+            if (isWebClient) {
+                // Set the token as an HTTP-only cookie for web clients
+                res.cookie("token", token, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === "production", // Ensure secure cookies in production
+                    sameSite: "strict",
+                });
 
-            res.status(result.status).send(result.message);
+                res.status(result.status).send(token);
+                return;
+            }
+
+            res.status(result.status).send(token);
         } catch (err) {
             console.log("500 internal server error: " + err);
             res.status(500).send(err.message);

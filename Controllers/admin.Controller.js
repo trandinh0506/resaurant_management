@@ -1,42 +1,43 @@
-const Product = require("../Models/product.Model");
-const products = require("../products");
+const adminService = require("../Services/admin.Service");
 
 class adminController {
+    validateAdminToken(req, res) {
+        const token =
+            req.headers.authorization?.split(" ")[1] || req.cookies.token;
+        if (!token) {
+            res.status(401).send("Missing authorization");
+            return;
+        }
+        const result = adminService.validateAdminToken(token);
+        if (result) {
+            res.status(200).send("OK");
+            return;
+        }
+        res.status(403).send("Access Denied");
+    }
     async addProduct(req, res) {
         try {
             const { name, price, description, category } = req.body;
-            const newProduct = new Product({
+            const result = await adminService.addProduct(
                 name,
                 price,
                 description,
-                category,
-                modify: true,
-            });
-            await newProduct.save();
-            await products.update();
-            res.status(201).json({
-                status: 201,
-                message: "Product added successfully!",
-            });
+                category
+            );
+            res.status(result.status).send(result.message);
         } catch (err) {
-            res.status(500).json({ status: 500, message: err.message });
+            console.log(err);
+            res.status(500).send(err.message);
         }
     }
     async removeProduct(req, res) {
         try {
             const id = req.params.id;
-            const result = await Product.findByIdAndDelete(id);
-            if (result) {
-                await products.update();
-                res.status(200).json({
-                    message: "Deleted product successfully",
-                });
-            } else {
-                res.status(404).json({ message: "id not found" });
-            }
+            const result = await adminService.removeProduct(id);
+            res.status(result.status).send(result.message);
         } catch (err) {
             console.log("error: ", err);
-            res.status(500).json({ status: 500, message: err.message });
+            res.status(500).send(err.message);
         }
     }
     async updateProduct(req, res) {
@@ -44,27 +45,16 @@ class adminController {
             const id = req.params.id;
             const { name, price, description, category } = req.body;
 
-            const updatedData = {
+            const result = await adminService.updateProduct(
+                id,
                 name,
                 price,
                 description,
-                category,
-            };
-
-            const result = await Product.findByIdAndUpdate(id, updatedData, {
-                new: true,
-            });
-
-            if (result) {
-                await products.update();
-                res.status(200).json({
-                    message: "Updated product successfully",
-                });
-            } else {
-                res.status(404).json({ message: "Product not found" });
-            }
+                category
+            );
+            res.status(result.status).send(result.message);
         } catch (err) {
-            res.status(500).json({ status: 500, message: err.message });
+            res.status(500).send(err.message);
         }
     }
 }

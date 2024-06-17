@@ -4,7 +4,7 @@ class authentication {
     async login(username, password) {
         const user = await User.findOne({ username, password });
         if (!user) {
-            return { status: 404, message: "User not found" };
+            return { status: 404, message: "Invalid username or password" };
         } else {
             return {
                 status: 200,
@@ -30,7 +30,7 @@ class authentication {
     }
     createToken(userId, isAdmin) {
         const payload = {
-            sub: userId,
+            userId: userId,
             role: isAdmin ? "admin" : "user",
         };
         const token = jwt.sign(payload, process.env.SECRET_KEY, {
@@ -39,16 +39,13 @@ class authentication {
 
         return token;
     }
-    validate(token, next, reject) {
-        jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
-            if (err) {
-                console.error("Token verification failed:", err);
-                reject();
-            } else {
-                console.log("Decoded token:", decoded);
-                next();
-            }
-        });
+    validate(token) {
+        try {
+            const decoded = jwt.verify(token, process.env.SECRET_KEY);
+            return { isSuccess: true, decoded };
+        } catch (err) {
+            return { isSuccess: false, decoded: err };
+        }
     }
 }
 
