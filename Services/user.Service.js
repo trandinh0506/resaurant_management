@@ -5,6 +5,9 @@ const productModel = require("../Models/product.Model");
 class userService {
     async booking(tableId, orderItems) {
         const table = await tableModel.findById(tableId);
+        if (!table) {
+            return { status: 404, message: "Table not found" };
+        }
         console.log(table);
         console.log(orderItems);
         orderItems.forEach((item) => {
