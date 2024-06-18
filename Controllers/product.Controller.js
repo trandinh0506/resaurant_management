@@ -4,7 +4,8 @@ const authenticationService = require("../Services/authentication.Service");
 
 class productController {
     async get(req, res) {
-        const token = req.headers.authorization?.split(" ")[1];
+        const token =
+            req.headers.authorization?.split(" ")[1] || req.cookies.token;
         if (!token) {
             res.status(401).json({ message: "Missing authorization token" });
             return;

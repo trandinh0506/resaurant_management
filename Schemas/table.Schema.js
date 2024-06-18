@@ -13,11 +13,13 @@ const tableSchema = new mongoose.Schema({
     orderedItems: {
         type: [
             {
-                product: {
+                productId: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: "products",
                 },
+                productName: String,
                 quantity: { type: Number, default: 0 },
+                price: { type: Number, default: 0 },
             },
         ],
         default: [],
@@ -29,8 +31,6 @@ const tableSchema = new mongoose.Schema({
     notes: String,
     startTime: Date,
     endTime: Date,
-    total: Number,
-    paid: Boolean,
 });
 
 module.exports = tableSchema;

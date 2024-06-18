@@ -8,21 +8,32 @@ class adminController {
             res.status(401).send("Missing authorization");
             return;
         }
-        const result = adminService.validateAdminToken(token);
-        if (result) {
+        const isAdmin = adminService.validateAdminToken(token);
+        if (isAdmin) {
             res.status(200).send("OK");
             return;
         }
         res.status(403).send("Access Denied");
     }
     async addProduct(req, res) {
+        const token =
+            req.headers.authorization?.split(" ")[1] || req.cookies.token;
+        if (!token) {
+            res.status(401).send("Missing authorization");
+            return;
+        }
+        const isAdmin = adminService.validateAdminToken(token);
+        if (!isAdmin) {
+            res.status(403).send("Access Denied");
+            return;
+        }
         try {
-            const { name, price, description, category } = req.body;
+            const { name, price, description, imageUrl } = req.body;
             const result = await adminService.addProduct(
                 name,
                 price,
                 description,
-                category
+                imageUrl
             );
             res.status(result.status).send(result.message);
         } catch (err) {
@@ -31,8 +42,19 @@ class adminController {
         }
     }
     async removeProduct(req, res) {
+        const token =
+            req.headers.authorization?.split(" ")[1] || req.cookies.token;
+        if (!token) {
+            res.status(401).send("Missing authorization");
+            return;
+        }
+        const isAdmin = adminService.validateAdminToken(token);
+        if (!isAdmin) {
+            res.status(403).send("Access Denied");
+            return;
+        }
         try {
-            const id = req.params.id;
+            const id = req.headers.id;
             const result = await adminService.removeProduct(id);
             res.status(result.status).send(result.message);
         } catch (err) {
@@ -41,16 +63,27 @@ class adminController {
         }
     }
     async updateProduct(req, res) {
+        const token =
+            req.headers.authorization?.split(" ")[1] || req.cookies.token;
+        if (!token) {
+            res.status(401).send("Missing authorization");
+            return;
+        }
+        const isAdmin = adminService.validateAdminToken(token);
+        if (!isAdmin) {
+            res.status(403).send("Access Denied");
+            return;
+        }
         try {
-            const id = req.params.id;
-            const { name, price, description, category } = req.body;
-
+            const id = req.headers.id;
+            const { name, price, description, category, imageUrl } = req.body;
             const result = await adminService.updateProduct(
                 id,
                 name,
                 price,
                 description,
-                category
+                category,
+                imageUrl
             );
             res.status(result.status).send(result.message);
         } catch (err) {

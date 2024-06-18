@@ -15,7 +15,7 @@ app.use(express.json());
 const corsOptions = {
     origin: process.env.ORIGIN,
     methods: ["GET", "PUT", "DELETE", "POST"],
-    allowedHeaders: ["Authorization", "Content-Type"],
+    allowedHeaders: ["Authorization", "Content-Type", "id"],
     credentials: true,
 };
 
@@ -25,7 +25,10 @@ app.use(cors(corsOptions));
 app.options("*", (req, res) => {
     res.header("Access-Control-Allow-Origin", process.env.ORIGIN);
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    res.header("Access-Control-Allow-Headers", "Authorization, Content-Type");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Authorization, Content-Type, id"
+    );
     res.sendStatus(200);
 });
 
@@ -33,7 +36,10 @@ app.options("*", (req, res) => {
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", process.env.ORIGIN);
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    res.header("Access-Control-Allow-Headers", "Authorization, Content-Type");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Authorization, Content-Type, id"
+    );
     next();
 });
 
@@ -77,9 +83,9 @@ app.use("/table", tableRoutes);
 app.use("/user", userRoutes);
 
 // 404 not found
-// app.use((req, res) => {
-//     res.status(404).json({ message: "Not Found" });
-// });
+app.use((req, res) => {
+    res.status(404).json({ message: "Not Found" });
+});
 const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

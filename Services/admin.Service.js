@@ -7,13 +7,14 @@ class adminService {
 
         return isSuccess && decoded.role == "admin";
     }
-    async addProduct(name, price, description, category) {
+    async addProduct(name, price, description, imageUrl) {
         try {
             const newProduct = new Product({
                 name,
                 price,
                 description,
-                category,
+                category: "",
+                imageUrl,
                 modify: true,
             });
             await newProduct.save();
@@ -25,7 +26,8 @@ class adminService {
     }
     async removeProduct(id) {
         try {
-            const result = await Product.findByIdAndDelete(id);
+            const update = { $set: { [modify]: false } };
+            const result = await Product.findByIdAndUpdate(id, update);
             if (result) {
                 await products.update();
                 return { status: 200, message: "Product deleted successfully" };
@@ -36,29 +38,26 @@ class adminService {
             return { status: 500, message: err.message };
         }
     }
-    async updateProduct(id, name, price, description, category) {
+    async updateProduct(id, name, price, description, category, imageUrl) {
         try {
             const updatedData = {
                 name,
                 price,
                 description,
                 category,
+                imageUrl,
             };
 
-            const result = await Product.findByIdAndUpdate(id, updatedData, {
-                new: true,
-            });
+            const result = await Product.findByIdAndUpdate(id, updatedData);
 
             if (result) {
                 await products.update();
-                res.status(200).json({
-                    message: "Updated product successfully",
-                });
+                return { status: 200, message: "Updated product successfully" };
             } else {
-                res.status(404).json({ message: "Product not found" });
+                return { status: 404, message: "Product not found" };
             }
         } catch (err) {
-            res.status(500).json({ status: 500, message: err.message });
+            return { status: 500, message: err.message };
         }
     }
 }
